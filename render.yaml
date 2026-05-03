@@ -1,49 +1,35 @@
-# Render.com deployment config
-# Place this in your repo root
-
 services:
   - type: web
     name: solanacy-shield-backend
     env: python
-    region: singapore   # Closest to India (Mumbai not available on Render)
+    region: singapore
     plan: free
 
-    # nmap binary must be installed before pip packages
     buildCommand: |
       apt-get update && apt-get install -y nmap && pip install -r requirements.txt
 
-    startCommand: >
-      gunicorn main:app
-      --workers 2
-      --timeout 120
-      --bind 0.0.0.0:$PORT
-      --log-level info
+    startCommand: python -m gunicorn main:app --workers 2 --timeout 120 --bind 0.0.0.0:$PORT --log-level info
 
     healthCheckPath: /ping
 
     envVars:
-      # Auto-generated secure key
       - key: SECRET_KEY
         generateValue: true
 
       - key: DEBUG
         value: "False"
 
-      # Gemini / Gemma model
       - key: GEMINI_API_KEY
-        sync: false         # Set manually in Render dashboard
+        sync: false
 
       - key: GEMMA_MODEL
         value: gemma-4-31b-it
 
-      # Google Safe Browsing (blacklist check)
       - key: SAFE_BROWSING_API_KEY
-        sync: false         # Set manually in Render dashboard
+        sync: false
 
-      # Firebase service account (full JSON as single string)
       - key: FIREBASE_SERVICE_ACCOUNT
-        sync: false         # Set manually in Render dashboard
+        sync: false
 
-      # Frontend domain — e.g. https://shield.solanacy.in
       - key: ALLOWED_ORIGINS
-        sync: false         # Set manually in Render dashboard
+        sync: false

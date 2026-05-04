@@ -5,10 +5,9 @@ services:
     region: singapore
     plan: free
 
-    buildCommand: |
-  apt-get update && apt-get install -y nmap && pip3 install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
 
-    startCommand: python -m gunicorn main:app --workers 2 --timeout 120 --bind 0.0.0.0:$PORT --log-level info
+    startCommand: gunicorn main:app --workers 2 --timeout 120 --bind 0.0.0.0:$PORT --log-level info
 
     healthCheckPath: /ping
 
